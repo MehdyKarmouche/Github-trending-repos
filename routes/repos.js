@@ -8,6 +8,38 @@ router.get('/languages', async function(req, res, next) {
   res.json(repos);
 });
 
+router.get('/language', async function(req,res,next){
+  const repos = await getRepos();
+  const l = repos.length;
+  var choice = req.body.choice;
+  var result = [];
+  var listOfRepos = [];
+  var cnt = 0;
+  var found = false;
+  choice = choice.toLowerCase();
+
+  for(var i = 0; i<l; i++){
+    var element = {}
+    if(repos[i].language != null)
+      if(repos[i].language.toLowerCase() == choice && choice != '' ){
+        cnt++;
+        element['name of repo'] = repos[i].nameRepo;
+        listOfRepos.push(element);
+        found = true;
+      }
+   }
+   if(found){
+      element['number of repos'] = cnt;
+      result.push(listOfRepos);
+      result.push(element);
+      res.json(result);
+   }
+   else{
+     //language deos not exist in the 100 trending repos
+     res.json("Language not found").status(404);
+   }
+
+})
 
 
 
@@ -19,10 +51,10 @@ async function  getRepos(){
   var dateString = date.toISOString().split('T')[0];
 
   const url = "https://api.github.com/search/repositories?q=created:>"+dateString+"&sort=stars&order=desc";
-  let response = await axios.get(url); 
-  var l = response.data.items.length;
+  const response = await axios.get(url); 
+  const l = response.data.items.length;
   var repos =[];
-
+  
   for(var i = 0; i<l; i++){
     var element = {}
     if(!repos.includes(response.data.items[i].language)){
@@ -37,9 +69,8 @@ async function  getRepos(){
 //function to remove duplicate languages
 async function diffLangs(){
   const repos = await getRepos();
-
+  const l = repos.length;
   var diffLangs = [];
-  var l = repos.length;
   var index=0;
 
   for(var i=0; i<l; i++){
