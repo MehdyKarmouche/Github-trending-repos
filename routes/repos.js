@@ -23,7 +23,7 @@ router.get('/language', async function(req,res,next){
     var element = {}
     if(repos[i].language != null && choice!=undefined){
       choice = choice.toLowerCase();
-      if(repos[i].language.toLowerCase() == choice && choice != '' ){
+      if(repos[i].language.toLowerCase() == choice ){
         cnt++;
         element['name of repo'] = repos[i].nameRepo;
         listOfRepos.push(element);
@@ -32,9 +32,10 @@ router.get('/language', async function(req,res,next){
     }
    }
    if(found){
-      element['number of repos'] = cnt;
+     var element2 = {};
+      element2['number of repos'] = cnt;
       result.push(listOfRepos);
-      result.push(element);
+      result.push(element2);
       res.json(result);
    }
    else{
