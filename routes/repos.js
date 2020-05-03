@@ -87,6 +87,5 @@ async function diffLangs(){
 
 }
 
+module.exports = {diffLangs, router};
 
-
-module.exports = router;
