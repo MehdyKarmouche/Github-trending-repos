@@ -2,31 +2,34 @@ var express = require('express');
 var router = express.Router();
 var axios = require('axios');
 
-/* GET home page. */
+// Get list of all the different languages
 router.get('/languages', async function(req, res, next) {
   const repos = await diffLangs();
   res.json(repos);
 });
 
+//Get the number and the list of repos of one language
+//Name of language should be specified in the body of the request
 router.get('/language', async function(req,res,next){
   const repos = await getRepos();
   const l = repos.length;
-  var choice = req.body.choice;
   var result = [];
   var listOfRepos = [];
   var cnt = 0;
   var found = false;
-  choice = choice.toLowerCase();
+  var choice = req.body.choice;
 
   for(var i = 0; i<l; i++){
     var element = {}
-    if(repos[i].language != null)
+    if(repos[i].language != null && choice!=undefined){
+      choice = choice.toLowerCase();
       if(repos[i].language.toLowerCase() == choice && choice != '' ){
         cnt++;
         element['name of repo'] = repos[i].nameRepo;
         listOfRepos.push(element);
         found = true;
       }
+    }
    }
    if(found){
       element['number of repos'] = cnt;
